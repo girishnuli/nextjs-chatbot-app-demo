@@ -1,8 +1,23 @@
 "use client"
 
 import { useChat } from "ai/react"
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { useAtom } from 'jotai'
+import { isLoggedInAtom } from '@/app/stores/store'
 
 export default function Chat() {
+
+  const [isLoggedIn] = useAtom(isLoggedInAtom)
+  const router = useRouter()
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.replace('/auth/login')
+    }
+  },[isLoggedIn,router])
+
+  // console.log(process.env.NODE_ENV)
   const { messages,input,handleInputChange,handleSubmit } = useChat()
 
   return (
