@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { useAtom } from 'jotai'
 import { isLoggedInAtom } from '@/app/stores/store'
 import { z } from 'zod'
+import { useAuthService } from '@/app/services/authService'
 
 // Schema for email and password validation
 const loginSchema = z.object({
@@ -21,8 +22,9 @@ export default function Login() {
     const [passwordError,setPasswordError] = useState<string>('')
     const [loginError,setLoginError] = useState<string>('')
     const router = useRouter()
+    const { login } = useAuthService()
 
-    const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         setEmailError('')
         setPasswordError('')
@@ -35,12 +37,8 @@ export default function Login() {
                 password: password
             })
 
-            // Dummy credentials
-            const hardcodedEmail = 'user@example.com'
-            const hardcodedPassword = 'secure!password123'
-
-            if (email === hardcodedEmail && password === hardcodedPassword) {
-                setIsLoggedIn(true)
+            const success = await login(email,password)
+            if (success) {
                 router.replace('/')
             } else {
                 setLoginError('Invalid email or password')
