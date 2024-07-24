@@ -7,8 +7,16 @@ export const runtime = 'edge'
 export async function POST(req: Request) {
     const { messages }: { messages: Message[] } = await req.json()
 
+    const api = ollama.Api({
+        baseUrl:
+            process.env.NODE_ENV === 'development'
+                ? 'http://localhost:11434'
+                : 'TODO: Specify production Ollama API Url'
+    })
     const textStream = await streamText({
-        model: ollama.ChatTextGenerator({ model: 'phi3' }).withChatPrompt(),
+        model: ollama
+            .ChatTextGenerator({ model: 'phi3', api })
+            .withChatPrompt(),
         prompt: {
             system: 'You are a helpful assistant.',
             messages: asChatMessages(messages)
