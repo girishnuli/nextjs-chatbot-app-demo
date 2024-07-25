@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { useAtom } from 'jotai'
 import { isLoggedInAtom } from '@/app/stores/store'
 
-export default function Chat() {
+export default function Home() {
 
   const [isLoggedIn] = useAtom(isLoggedInAtom)
   const router = useRouter()
@@ -17,7 +17,6 @@ export default function Chat() {
     }
   },[isLoggedIn,router])
 
-  // console.log(process.env.NODE_ENV)
   const { messages,input,handleInputChange,handleSubmit } = useChat()
 
   return (
@@ -25,6 +24,7 @@ export default function Chat() {
       {messages.map((message) => (
         <div
           key={message.id}
+          id={`message-${message.id}`}
           className="whitespace-pre-wrap"
           style={{ color: message.role === "user" ? "black" : "green" }}
         >
@@ -37,6 +37,7 @@ export default function Chat() {
 
       <form onSubmit={handleSubmit}>
         <input
+          id="chat-input"
           className="fixed bottom-0 w-full max-w-md p-2 mb-8 border border-gray-300 rounded shadow-xl"
           value={input}
           placeholder="Ask me anything..."
